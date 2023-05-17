@@ -11,6 +11,11 @@ on:
       - "unlabeled"
     paths:
       - "modules/test/**"
+      
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
 
 jobs:
   check-changelog:
@@ -18,7 +23,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: "Check for changelog entry"
         uses: brettcannon/check-for-changed-files@v1.1.1
         with:
