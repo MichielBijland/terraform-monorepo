@@ -1,0 +1,26 @@
+name: Module
+on:
+  pull_request:
+    branches:
+      - "main"
+    types:
+      - "opened"
+      - "reopened"
+      - "synchronize"
+      - "labeled"
+      - "unlabeled"
+    paths:
+      - "modules/test/**"
+
+jobs:
+  check-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Check for changelog entry"
+        uses: brettcannon/check-for-changed-files@v1.1.1
+        with:
+          file-pattern: |
+            modules/test/.changes/unreleased/*.yaml
+            modules/test/CHANGELOG.md
+          skip-label: "skip changelog"
+          failure-message: "Missing a changelog file in ${file-pattern}; please add one or apply the ${skip-label} label to the pull request"
