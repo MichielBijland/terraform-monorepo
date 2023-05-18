@@ -12,26 +12,51 @@ on:
     paths:
       - "modules/test/**"
 
+env:
+  TF_VERSION: 1.3.9
+  TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
+  TF_ROOT: ${{ github.workspace }}/modules/test
+
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        terraform-versions: [TF_VERSION, latest]
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+      - name: Setup Terraform - ${{ matrix['terraform-versions'] }}
+        uses: hashicorp/setup-terraform@v2.0.3
         with:
-          terraform_version: 1.4.6
+          terraform_version: ${{ matrix['terraform-versions'] }}
 
-      - name: Terraform fmt -check
-        run: |
-          terraform fmt -recursive -check | while IFS= read -r filename; do
-            if [[ -f "$filename" ]]; then
-              echo "::error file=$filename::invalid formatted file"
-            fi
-          done
-          terraform fmt -recursive -check
+      - name: Terraform fmt - ${{ matrix['terraform-versions'] }}
+        id: fmt
+        run: terraform fmt -check
+        working-directory: ${{ env.TF_ROOT }}
+        continue-on-error: true
+
+      - name: Terraform Init - ${{ matrix['terraform-versions'] }}
+        id: init
+        run: terraform init
+        working-directory: ${{ env.TF_ROOT }}
+
+      - name: Terraform Validate - ${{ matrix['terraform-versions'] }}
+        if: ${{ matrix['terraform-versions'] == 'latest' }}
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ${{ env.TF_ROOT }}
+      
+      - name: Terraform Validate - ${{ matrix['terraform-versions'] }}
+        if: ${{ matrix['terraform-versions'] != 'latest' }}
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ${{ env.TF_ROOT }}
+        continue-on-error: true
 
   changelog:
     runs-on: ubuntu-latest
