@@ -51,6 +51,8 @@ jobs:
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: ${{ runner.os }}-terraform-${{ matrix['terraform-versions'] }}-${{ hashFiles('**/*.tf') }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-${{ matrix['terraform-versions'] }}-
 
       - name: Terraform Init - ${{ matrix['terraform-versions'] }}
         run: terraform init
