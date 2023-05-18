@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        terraform-versions: [TF_VERSION, latest]
+        terraform-versions: [${{ env.TF_VERSION }}, latest]
 
     steps:
       - name: Checkout
@@ -38,6 +38,16 @@ jobs:
         run: terraform fmt -check
         working-directory: ${{ env.TF_ROOT }}
         continue-on-error: true
+
+      - name: Create Terraform Plugin Cache Dir
+        run: mkdir --parents $TF_PLUGIN_CACHE_DIR
+
+      - name: Cache Terraform
+        uses: actions/cache@v3
+        working-directory: ${{ env.TF_ROOT }}
+        with:
+          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          key: ${{ runner.os }}-terraform-${{ matrix['terraform-versions'] }}-${{ hashFiles('${{ env.TF_ROOT }}/**/*.tf') }}
 
       - name: Terraform Init - ${{ matrix['terraform-versions'] }}
         run: terraform init
