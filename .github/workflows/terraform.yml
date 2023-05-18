@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        terraform-versions: [${{ env.TF_VERSION }}, latest]
+        terraform-versions: [latest]
 
     steps:
       - name: Checkout
