@@ -6,7 +6,7 @@ settings:
   indent: 4
 
 output:
-  file: ./.changes/header.tpl.md
+  file: README.md
   mode: inject
   template: |-
     <!-- BEGIN_TF_DOCS -->
