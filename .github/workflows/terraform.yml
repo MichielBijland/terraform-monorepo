@@ -19,7 +19,7 @@ on:
 
 defaults:
   run:
-    working-directory: ${{ github.workspace }}/modules/test
+    working-directory: modules/test
     shell: bash
 
 env:
