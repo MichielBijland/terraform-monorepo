@@ -40,7 +40,7 @@ jobs:
         continue-on-error: true
 
       - name: Create Terraform Plugin Cache Dir
-        run: mkdir --parents $TF_PLUGIN_CACHE_DIR
+        run: mkdir -p $TF_PLUGIN_CACHE_DIR
 
       - name: Cache Terraform
         uses: actions/cache@v3
