@@ -76,7 +76,7 @@ jobs:
       - name: Check for terraform-docs
         uses: terraform-docs/gh-actions@main
         with:
-          working-dir: ${{ TF_ROOT }}
+          working-dir: ${{ env.TF_ROOT }}
           config-file: .terraform-docs.yml
           fail-on-diff: "true"
 
