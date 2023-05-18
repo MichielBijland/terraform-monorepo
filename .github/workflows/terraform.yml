@@ -18,7 +18,7 @@ env:
   TF_ROOT: ${{ github.workspace }}/modules/test
 
 jobs:
-  lint:
+  terraform:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -35,25 +35,21 @@ jobs:
           terraform_version: ${{ matrix['terraform-versions'] }}
 
       - name: Terraform fmt - ${{ matrix['terraform-versions'] }}
-        id: fmt
         run: terraform fmt -check
         working-directory: ${{ env.TF_ROOT }}
         continue-on-error: true
 
       - name: Terraform Init - ${{ matrix['terraform-versions'] }}
-        id: init
         run: terraform init
         working-directory: ${{ env.TF_ROOT }}
 
       - name: Terraform Validate - ${{ matrix['terraform-versions'] }}
         if: ${{ matrix['terraform-versions'] == 'latest' }}
-        id: validate
         run: terraform validate -no-color
         working-directory: ${{ env.TF_ROOT }}
       
       - name: Terraform Validate - ${{ matrix['terraform-versions'] }}
         if: ${{ matrix['terraform-versions'] != 'latest' }}
-        id: validate
         run: terraform validate -no-color
         working-directory: ${{ env.TF_ROOT }}
         continue-on-error: true
