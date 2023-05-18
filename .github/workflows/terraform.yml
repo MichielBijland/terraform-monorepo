@@ -50,7 +50,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
-          key: ${{ runner.os }}-terraform-${{ matrix['terraform-versions'] }}-${{ hashFiles('${{ env.TF_ROOT }}/**/*.tf') }}
+          key: ${{ runner.os }}-terraform-${{ matrix['terraform-versions'] }}-${{ hashFiles('**/*.tf') }}
 
       - name: Terraform Init - ${{ matrix['terraform-versions'] }}
         run: terraform init
@@ -60,12 +60,25 @@ jobs:
         if: ${{ matrix['terraform-versions'] == 'latest' }}
         run: terraform validate -no-color
         working-directory: ${{ env.TF_ROOT }}
+        continue-on-error: true
       
       - name: Terraform Validate - ${{ matrix['terraform-versions'] }}
         if: ${{ matrix['terraform-versions'] != 'latest' }}
         run: terraform validate -no-color
         working-directory: ${{ env.TF_ROOT }}
-        continue-on-error: true
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+
+      - name: Check for terraform-docs
+        uses: terraform-docs/gh-actions@main
+        with:
+          working-dir: ${{ TF_ROOT }}
+          config-file: .terraform-docs.yml
+          fail-on-diff: "true"
 
   changelog:
     runs-on: ubuntu-latest
