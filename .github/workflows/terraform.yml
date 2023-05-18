@@ -111,7 +111,7 @@ jobs:
           version: ${{ env.CHANGIE_VERSION }}
           args: batch auto
 
-       - name: Merge changes
+      - name: Merge changes
         uses: miniscruff/changie-action@b6d52c80deb236a5b548f8774cd5a18b87da9e9a # v1.0.1
         with:
           version: ${{ env.CHANGIE_VERSION }}
