@@ -44,7 +44,6 @@ jobs:
 
       - name: Cache Terraform
         uses: actions/cache@v3
-        working-directory: ${{ env.TF_ROOT }}
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: ${{ runner.os }}-terraform-${{ matrix['terraform-versions'] }}-${{ hashFiles('${{ env.TF_ROOT }}/**/*.tf') }}
